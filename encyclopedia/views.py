@@ -1,5 +1,6 @@
-from django.http import Http404
-from django.shortcuts import render
+from django.http import Http404, HttpResponseBadRequest
+from django.shortcuts import redirect, render
+from django.urls import reverse
 import markdown2
 
 from . import util
@@ -20,4 +21,30 @@ def entry(request, entry):
         "entry": entry,
         "entry_html": entry_html
     })
+
+def search(request):
+    # Check if there is a q variable inside the URL and make a variable for it.
+    if query := request.GET['q']:
+        # Get all the saved entries
+        savedEntries = util.list_entries()
+
+        # If search exactly matches an entry name, redirect to it.
+        if query in savedEntries:
+            return redirect(entry, query)
+        # Casefold the query to make it case insensitive.
+        else:
+            
+            casefoldQuery = query.casefold()
+            # Variable for matched entries
+            matches = []
+            for savedEntry in savedEntries:
+                if casefoldQuery in savedEntry.casefold():
+                    matches.append(savedEntry)
+            return render(request, "encyclopedia/index.html", {
+                "entries": matches
+            })            
+    else:
+        # If there is not q variable found return 400.
+        return HttpResponseBadRequest()
+    
 
