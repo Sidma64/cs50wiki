@@ -50,9 +50,12 @@ def search(request):
 def addEntry(request):
     if request.method == "POST":
         title = request.POST['title']
+        if title.lower() in (entry.lower() for entry in util.list_entries()):
+            return HttpResponse(f'The entry for "{title}" already exists.')
+
         content = request.POST['content']
         util.save_entry(title, content)
-        redirect(entry, title)
+        return redirect(entry, title)
     
     return render(request, "encyclopedia/addEntry.html")
         
