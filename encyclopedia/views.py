@@ -11,14 +11,14 @@ def index(request):
         "entries": util.list_entries()
     })
 
-def entry(request, entry):
-    entry_md = util.get_entry(entry)
+def entry(request, entryTitle):
+    entry_md = util.get_entry(entryTitle)
     if entry_md == None:
         return Http404('<h1>Page not found</h1>')
     entry_html = markdown2.markdown(entry_md)
     
     return render(request, "encyclopedia/entry.html", {
-        "entry": entry,
+        "entry": entryTitle,
         "entry_html": entry_html
     })
 
@@ -50,7 +50,7 @@ def search(request):
 def addEntry(request):
     if request.method == "POST":
         title = request.POST['title']
-        if title.lower() in (entry.lower() for entry in util.list_entries()):
+        if title.lower() in (entryTitle.lower() for entryTitle in util.list_entries()):
             return HttpResponse(f'The entry for "{title}" already exists.')
 
         content = request.POST['content']
@@ -59,14 +59,14 @@ def addEntry(request):
     
     return render(request, "encyclopedia/addEntry.html")
 
-def editEntry(request, entry):
+def editEntry(request, entryTitle):
     if request.method == "POST":
         content = request.POST['content']
-        util.save_entry(entry, content)
-        return redirect(entry, entry)
+        util.save_entry(entryTitle, content)
+        return redirect(entry, entryTitle)
     return render(request, "encyclopedia/editEntry.html", {
-        "content": util.get_entry(entry),
-        "entry": entry
+        "content": util.get_entry(entryTitle),
+        "entry": entryTitle
     })
         
     
