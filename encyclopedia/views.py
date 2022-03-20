@@ -1,4 +1,4 @@
-from django.http import Http404, HttpResponseBadRequest
+from django.http import Http404, HttpResponse, HttpResponseBadRequest
 from django.shortcuts import redirect, render
 from django.urls import reverse
 import markdown2
@@ -46,5 +46,15 @@ def search(request):
     else:
         # If there is not q variable found return 400.
         return HttpResponseBadRequest()
+
+def addEntry(request):
+    if request.method == "POST":
+        title = request.POST['title']
+        content = request.POST['content']
+        util.save_entry(title, content)
+        redirect(entry, title)
+    
+    return render(request, "encyclopedia/addEntry.html")
+        
     
 
