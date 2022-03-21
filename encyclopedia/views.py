@@ -34,7 +34,6 @@ def search(request):
             return redirect(entry, query)
         # Casefold the query to make it case insensitive.
         else:
-            
             casefoldQuery = query.casefold()
             # Variable for matched entries
             matches = []
