@@ -2,6 +2,7 @@ from django.http import Http404, HttpResponse, HttpResponseBadRequest
 from django.shortcuts import redirect, render
 from django.urls import reverse
 import markdown2
+import random
 
 from . import util
 
@@ -68,6 +69,10 @@ def editEntry(request, entryTitle):
         "content": util.get_entry(entryTitle),
         "entry": entryTitle
     })
-        
+
+def randomEntry(request):
+    entryTitles = util.list_entries()
+    randomPick = random.choice(entryTitles)
+    return redirect(entry, randomPick)
     
 
